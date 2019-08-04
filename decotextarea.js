@@ -92,7 +92,7 @@ $(()=>{
     if($('#input').val()=='')$('#input').focus();
   });
 
-  $('#input').on('keyup',(e)=>{
+  $('#input').on('input',(e)=>{
     if(!tool_using){
       for(var i=sel_s;i<Math.min($('#input').val().length,before_input.length);i++){
         if(before_input[i]!=$('#input').val().slice(i,i+1)){
@@ -119,5 +119,8 @@ $(()=>{
     onInputChange();
     before_input=Array.from($('#input').val());
     tool_using=false;
+  });
+  $('#input').on('keyup',(e)=>{
+    onInputChange();
   });
 });

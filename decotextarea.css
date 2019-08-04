@@ -3,6 +3,7 @@
   top: 0;
   transform: translateY(-100vh);
 }
+
 .letter.sel{
   background-color: #63f;
   color: #fff;
@@ -19,7 +20,15 @@
 .letter.c{
   text-decoration: line-through;
 }
-
+#cursor{
+  animation: blink 0.5s ease-in-out infinite alternate;
+}
+@keyframes blink{
+    0% {opacity:0;}
+    49%{opacity: 0;}
+    50%{opacity:1;}
+    100% {opacity:1;}
+  }
 #output{
   width: 100%;
   height: 70vh;
