@@ -1,23 +1,23 @@
-#input{
+#dta_input{
   position: fixed;
   top: 0;
   transform: translateY(-100vh);
 }
 
-.letter.sel{
+.dta_letter.sel{
   background-color: #63f;
   color: #fff;
 }
-.letter.b{
+.dta_letter.b{
   font-weight: bold;
 }
-.letter.i{
+.dta_letter.i{
   font-style: italic;
 }
-.letter.u{
+.dta_letter.u{
   text-decoration: underline;
 }
-.letter.c{
+.dta_letter.c{
   text-decoration: line-through;
 }
 #cursor{
@@ -29,7 +29,7 @@
     50%{opacity:1;}
     100% {opacity:1;}
   }
-#output{
+#dta_output{
   width: 100%;
   height: 70vh;
   margin: 10vh;
