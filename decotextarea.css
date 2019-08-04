@@ -7,6 +7,18 @@
   background-color: #63f;
   color: #fff;
 }
+.letter.b{
+  font-weight: bold;
+}
+.letter.i{
+  font-style: italic;
+}
+.letter.u{
+  text-decoration: underline;
+}
+.letter.c{
+  text-decoration: line-through;
+}
 
 #output{
   width: 100%;
