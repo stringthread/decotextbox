@@ -49,11 +49,33 @@ function onInputChange(){
 $(()=>{
   $(code_cursor).prependTo('#output');
   $('#output').on('mousedown','.letter',(e)=>{
+    e.stopPropagation();
     $('.letter').removeClass('sel');
     sel_s=parseInt($(e.currentTarget).attr('data-n'),10);
   });
   $('#output').on('mouseup','.letter',(e)=>{
+    e.stopPropagation();
     var n=parseInt($(e.currentTarget).attr('data-n'),10);
+    if(sel_s!=n){
+      var sel_min=Math.min(sel_s,n);
+      var sel_max=Math.max(sel_s,n)
+      $('#input').focus().get(0).setSelectionRange(sel_min,sel_max);
+      for (var i = sel_min; i < sel_max; i++) {
+        $('.letter[data-n='+i+']').addClass('sel');
+      }
+    }else{
+    $('#input').focus().get(0).setSelectionRange(n+1,n+1);
+  }
+    $('#cursor').insertAfter('.letter[data-n='+n+']');
+  });
+  $('#output').on('mousedown','.line',(e)=>{
+    e.stopPropagation();
+    $('.letter').removeClass('sel');
+    sel_s=parseInt($(e.currentTarget).children('.letter').last().attr('data-n'),10)+1;
+  });
+  $('#output').on('mouseup','.line',(e)=>{
+    e.stopPropagation();
+    var n=parseInt($(e.currentTarget).children('.letter').last().attr('data-n'),10)+1;
     if(sel_s!=n){
       var sel_min=Math.min(sel_s,n);
       var sel_max=Math.max(sel_s,n)
