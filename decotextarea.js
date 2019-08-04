@@ -71,25 +71,27 @@ $(()=>{
   });
 
   $('#input').on('keyup',(e)=>{
-    for(var i=sel_s;i<Math.min($('#input').val().length,before_input.length);i++){
-      if(before_input[i]!=$('#input').val().slice(i,i+1)){
-        if(before_input[i]=='%'){
-          if(before_input[i-1]=='%')before_input[i-1]='';
-          if(before_input[i+1]=='%')before_input[i+1]='';
-          $('#input').val(before_input.join(''));
-        }else if($('#input').val().slice(i,i+1)=='%'){
-          var tmp_input=$('#input').val().slice(0,i);
-          tmp_input+='%';
-          tmp_input+=$('#input').val().slice(i+1);
-          $('#input').val(tmp_input);
+    if(!tool_using){
+      for(var i=sel_s;i<Math.min($('#input').val().length,before_input.length);i++){
+        if(before_input[i]!=$('#input').val().slice(i,i+1)){
+          if(before_input[i]=='%'){
+            if(before_input[i-1]=='%')before_input[i-1]='';
+            if(before_input[i+1]=='%')before_input[i+1]='';
+            $('#input').val(before_input.join(''));
+          }else if($('#input').val().slice(i,i+1)=='%'){
+            var tmp_input=$('#input').val().slice(0,i);
+            tmp_input+='%';
+            tmp_input+=$('#input').val().slice(i+1);
+            $('#input').val(tmp_input);
+          }
         }
       }
-    }
-    if($('#input').val().length!=before_input.length){
-      if($('#input').val().length>before_input.length&&$('#input').val().slice(-1)=='%'){
-        $('#input').val($('#input').val()+'%');
-      }else if($('#input').val().length<before_input.length&&before_input[before_input.length-1]=='%'&&before_input[before_input.length-2]=='%'){
-        $('#input').val($('#input').val().slice(0,-1));
+      if($('#input').val().length!=before_input.length){
+        if($('#input').val().length>before_input.length&&$('#input').val().slice(-1)=='%'){
+          $('#input').val($('#input').val()+'%');
+        }else if($('#input').val().length<before_input.length&&before_input[before_input.length-1]=='%'&&before_input[before_input.length-2]=='%'){
+          $('#input').val($('#input').val().slice(0,-1));
+        }
       }
     }
     onInputChange();
