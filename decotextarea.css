@@ -20,7 +20,18 @@
 .dta_letter.c{
   text-decoration: line-through;
 }
-#cursor{
+.dta_placeholder{
+  color: #666;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.dta_placeholder.hidden{
+  display: none;
+}
+.dta_cursor{
   animation: blink 0.5s ease-in-out infinite alternate;
 }
 @keyframes blink{

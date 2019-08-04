@@ -1,10 +1,12 @@
-var code_cursor='<span id="cursor">|</span>';
+var code_cursor='<span class="dta_cursor">|</span>';
 var sel_s;
+var is_sel_range=false;
 var tool_using=false;
 var before_input=new Array();
 function onInputChange(){
-  $('.dta_output').children().remove();
-  var code_output='<div class="line">';
+  $('.dta_placeholder').addClass('hidden');
+  $('.dta_output').children(':not(.dta_placeholder)').remove();
+  var code_output='<div class="dta_line">';
   var n=0;
   var per=false;
   var b=false;
@@ -13,7 +15,7 @@ function onInputChange(){
   var c=false;
   $('.dta_input').val().split('').forEach((e)=>{
     if(e=='\n'||e=='\r\n'||e=='\r'){
-      code_output+='</div><div class="line"><span class="dta_letter" data-n='+n+'></span>';
+      code_output+='</div><div class="dta_line"><span class="dta_letter" data-n='+n+'></span>';
     }else if(e=='%'){
       if(per)code_output+='<span class="dta_letter'+(b?' b':'')+(i?' i':'')+(u?' u':'')+(c?' c':'')+'" data-n='+n+'>'+e+'</span>';
       per=!per;
@@ -35,19 +37,20 @@ function onInputChange(){
     n++;
   });
   code_output+='</span>';
-  $('.dta_output').html(code_output);
+  $('.dta_output').append(code_output);
   sel_s=$('.dta_input').get(0).selectionStart;
-  if($('.dta_input').is(':focus')){
+  if($('.dta_input').is(':focus')&&!is_sel_range){
     if(sel_s==0){
       $(code_cursor).prependTo('.dta_output');
     }else{
       $(code_cursor).insertAfter('.dta_letter[data-n='+(sel_s-1)+']');
     }
+  }else if($('.dta_input').is(':focus')&&$('.dta_input').val()==''){
+    $('.dta_placeholder').removeClass('hidden');
   }
 }
 
 $(()=>{
-  $(code_cursor).prependTo('.dta_output');
   $('.dta_output').on('mousedown','.dta_letter',(e)=>{
     e.stopPropagation();
     $('.dta_letter').removeClass('sel');
@@ -57,6 +60,7 @@ $(()=>{
     e.stopPropagation();
     var n=parseInt($(e.currentTarget).attr('data-n'),10);
     if(sel_s!=n){
+      is_sel_range=true;
       var sel_min=Math.min(sel_s,n);
       var sel_max=Math.max(sel_s,n)
       $('.dta_input').focus().get(0).setSelectionRange(sel_min,sel_max);
@@ -64,19 +68,21 @@ $(()=>{
         $('.dta_letter[data-n='+i+']').addClass('sel');
       }
     }else{
+      si_sel_range=false;
     $('.dta_input').focus().get(0).setSelectionRange(n+1,n+1);
   }
-    $('#cursor').insertAfter('.dta_letter[data-n='+n+']');
+    $('.dta_cursor').insertAfter('.dta_letter[data-n='+n+']');
   });
-  $('.dta_output').on('mousedown','.line',(e)=>{
+  $('.dta_output').on('mousedown','.dta_line',(e)=>{
     e.stopPropagation();
     $('.dta_letter').removeClass('sel');
     sel_s=parseInt($(e.currentTarget).children('.dta_letter').last().attr('data-n'),10)+1;
   });
-  $('.dta_output').on('mouseup','.line',(e)=>{
+  $('.dta_output').on('mouseup','.dta_line',(e)=>{
     e.stopPropagation();
     var n=parseInt($(e.currentTarget).children('.dta_letter').last().attr('data-n'),10)+1;
     if(sel_s!=n){
+      is_sel_range=true;
       var sel_min=Math.min(sel_s,n);
       var sel_max=Math.max(sel_s,n)
       $('.dta_input').focus().get(0).setSelectionRange(sel_min,sel_max);
@@ -84,9 +90,10 @@ $(()=>{
         $('.dta_letter[data-n='+i+']').addClass('sel');
       }
     }else{
+      is_sel_range=false;
     $('.dta_input').focus().get(0).setSelectionRange(n+1,n+1);
   }
-    $('#cursor').insertAfter('.dta_letter[data-n='+n+']');
+    $('.dta_cursor').insertAfter('.dta_letter[data-n='+n+']');
   });
   $('.dta_output').click((e)=>{
     if($('.dta_input').val()=='')$('.dta_input').focus();
@@ -122,5 +129,18 @@ $(()=>{
   });
   $('.dta_input').on('keyup',(e)=>{
     onInputChange();
+  });
+
+  $('.dta_input').on('focusout',(e)=>{
+    if($('.dta_input').val()==''){
+      $('.dta_cursor').remove();
+      $('.dta_placeholder').removeClass('hidden');
+    }
+  });
+  $('.dta_input').on('focusin',(e)=>{
+    if($('.dta_input').val()==''){
+      $(code_cursor).prependTo('.dta_output');
+      $('.dta_placeholder').addClass('hidden');
+    }
   });
 });
