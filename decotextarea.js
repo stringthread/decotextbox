@@ -1,4 +1,4 @@
-var code_cursor='<span class="dta_cursor">|</span>';
+var code_cursor='<span class="dta_cursor"></span>';
 var sel_s;
 var is_sel_range=false;
 var tool_using=false;
@@ -6,7 +6,7 @@ var before_input=new Array();
 function onInputChange(){
   $('.dta_placeholder').addClass('hidden');
   $('.dta_output').children(':not(.dta_placeholder)').remove();
-  var code_output='<div class="dta_line">';
+  var code_output='<div class="dta_line"><span class="dta_letter dta_space" data-n=0>&emsp;</span>';
   var n=0;
   var per=false;
   var b=false;
@@ -15,7 +15,7 @@ function onInputChange(){
   var c=false;
   $('.dta_input').val().split('').forEach((e)=>{
     if(e=='\n'||e=='\r\n'||e=='\r'){
-      code_output+='</div><div class="dta_line"><span class="dta_letter" data-n='+n+'></span>';
+      code_output+='</div><div class="dta_line"><span class="dta_letter dta_space" data-n='+n+'>&emsp;</span>';
     }else if(e=='%'){
       if(per)code_output+='<span class="dta_letter'+(b?' b':'')+(i?' i':'')+(u?' u':'')+(c?' c':'')+'" data-n='+n+'>'+e+'</span>';
       per=!per;
@@ -41,7 +41,7 @@ function onInputChange(){
   sel_s=$('.dta_input').get(0).selectionStart;
   if($('.dta_input').is(':focus')&&!is_sel_range){
     if(sel_s==0){
-      $(code_cursor).prependTo('.dta_output');
+      $(code_cursor).insertAfter('.dta_letter.dta_space[data-n=0]');
     }else{
       $(code_cursor).insertAfter('.dta_letter[data-n='+(sel_s-1)+']');
     }
@@ -62,38 +62,40 @@ $(()=>{
     if(sel_s!=n){
       is_sel_range=true;
       var sel_min=Math.min(sel_s,n);
-      var sel_max=Math.max(sel_s,n)
+      var sel_max=Math.max(sel_s,n);
       $('.dta_input').focus().get(0).setSelectionRange(sel_min,sel_max);
       for (var i = sel_min; i < sel_max; i++) {
         $('.dta_letter[data-n='+i+']').addClass('sel');
       }
     }else{
       si_sel_range=false;
-    $('.dta_input').focus().get(0).setSelectionRange(n+1,n+1);
-  }
-    $('.dta_cursor').insertAfter('.dta_letter[data-n='+n+']');
+      $('.dta_input').focus().get(0).setSelectionRange(n+1,n+1);
+      $('.dta_cursor').remove();
+      $(code_cursor).insertAfter($(e.currentTarget));
+    }
   });
   $('.dta_output').on('mousedown','.dta_line',(e)=>{
     e.stopPropagation();
     $('.dta_letter').removeClass('sel');
-    sel_s=parseInt($(e.currentTarget).children('.dta_letter').last().attr('data-n'),10)+1;
+    sel_s=parseInt($(e.currentTarget).children('.dta_letter').last().attr('data-n'),10);
   });
   $('.dta_output').on('mouseup','.dta_line',(e)=>{
     e.stopPropagation();
-    var n=parseInt($(e.currentTarget).children('.dta_letter').last().attr('data-n'),10)+1;
+    var n=parseInt($(e.currentTarget).children('.dta_letter').last().attr('data-n'),10);
     if(sel_s!=n){
       is_sel_range=true;
       var sel_min=Math.min(sel_s,n);
-      var sel_max=Math.max(sel_s,n)
+      var sel_max=Math.max(sel_s,n)+1;
       $('.dta_input').focus().get(0).setSelectionRange(sel_min,sel_max);
       for (var i = sel_min; i < sel_max; i++) {
         $('.dta_letter[data-n='+i+']').addClass('sel');
       }
     }else{
       is_sel_range=false;
-    $('.dta_input').focus().get(0).setSelectionRange(n+1,n+1);
-  }
-    $('.dta_cursor').insertAfter('.dta_letter[data-n='+n+']');
+      $('.dta_input').focus().get(0).setSelectionRange(n+1,n+1);
+      $('.dta_cursor').remove();
+      $(code_cursor).insertAfter('.dta_letter[data-n='+n+']:not(.dta_space)');
+    }
   });
   $('.dta_output').click((e)=>{
     if($('.dta_input').val()=='')$('.dta_input').focus();
@@ -139,7 +141,8 @@ $(()=>{
   });
   $('.dta_input').on('focusin',(e)=>{
     if($('.dta_input').val()==''){
-      $(code_cursor).prependTo('.dta_output');
+      $('.dta_cursor').remove();
+      $(code_cursor).insertAfter('.dta_letter.dta_space[data-n=0]');
       $('.dta_placeholder').addClass('hidden');
     }
   });
