@@ -33,6 +33,7 @@ function onInputChange(){
       per=false;
     }else {
       code_output+='<span class="dta_letter'+(b?' b':'')+(i?' i':'')+(u?' u':'')+(c?' c':'')+'" data-n='+n+'>'+e+'</span>';
+      per=false;
     }
     n++;
   });
